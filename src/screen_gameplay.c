@@ -50,7 +50,7 @@ void InitGameplayScreen(void)
     gameRunning = true;
 
     currentPrice = 0.0f;
-    targetPrice = GetRandomValue(500, 5000) / 100.0f;;
+    targetPrice = GetRandomValue(500, 5000) / 100.0f;
     isPumping = false;
 
     camera.position = (Vector3){10, 10, 10};
