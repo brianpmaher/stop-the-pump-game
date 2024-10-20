@@ -152,91 +152,94 @@ void DrawGameplayScreen(void)
         const float cameraAnimationTargetScale = 1.0;
         const Color cameraAnimationTargetColor = MAROON;
         // DrawSphere(cameraAnimationPosition1, cameraAnimationTargetScale, cameraAnimationTargetColor);
-        DrawSphere(cameraAnimationPosition2, cameraAnimationTargetScale, cameraAnimationTargetColor);
+        // DrawSphere(cameraAnimationPosition2, cameraAnimationTargetScale, cameraAnimationTargetColor);
     }
     EndMode3D();
 
-    const int screenWidth = GetScreenWidth();
-    const int screenHeight = GetScreenHeight();
-    const char* titleText = "Gas Pump Game";
-    const int fontSize = 40;
-    const int titleTextWidth = MeasureText(titleText, fontSize);
-    const int rowCount = 4;
-    const int margin = 80;
-    const int rowHeight = fontSize + margin;
-    DrawText(titleText,
-        // x position
-        screenWidth / 2 - titleTextWidth / 2,
-        // y position
-        screenHeight / 2 - (rowCount * rowHeight) / 2,
-        fontSize,
-        DARKGRAY);
-    const char* targetText = TextFormat("Target: $%.2f", targetPrice);
-    const int targetTextWidth = MeasureText(targetText, fontSize);
-    DrawText(targetText,
-        // x position
-        screenWidth / 2 - targetTextWidth / 2,
-        // y position
-        screenHeight / 2 - (rowCount * rowHeight) / 2 + rowHeight,
-        fontSize,
-        DARKGRAY);
-    const char* currentText = TextFormat("Current: $%.2f", currentPrice);
-    const int currentTextWidth = MeasureText(currentText, fontSize);
-    DrawText(currentText,
-        // x position
-        screenWidth / 2 - currentTextWidth / 2,
-        // y position
-        screenHeight / 2 - (rowCount * rowHeight) / 2 + 2 * rowHeight,
-        fontSize,
-        DARKGRAY);
-    const char* scoreText = TextFormat("Score: $%.2f", score);
-    const int scoreTextWidth = MeasureText(scoreText, fontSize);
-    DrawText(scoreText,
-        // x position
-        screenWidth / 2 - scoreTextWidth / 2,
-        // y position
-        screenHeight / 2 - (rowCount * rowHeight) / 2 + 3 * rowHeight - 20,
-        fontSize,
-        DARKGRAY);
-    const char* scoreLabelText = "Keep score below $1.00";
-    const int scoreLabelFontSize = 20;
-    const int scoreLabelTextWidth = MeasureText(scoreLabelText, scoreLabelFontSize);
-    DrawText(scoreLabelText,
-        // x position
-        screenWidth / 2 - scoreLabelTextWidth / 2,
-        // y position
-        screenHeight / 2 - (rowCount * rowHeight) / 2 + 4 * rowHeight - 100,
-        scoreLabelFontSize,
-        DARKGRAY);
-    const char* scoreLabel2Text = "Below $0.02 reduces score by $0.25";
-    const int scoreLabel2FontSize = 20;
-    const int scoreLabel2TextWidth = MeasureText(scoreLabel2Text, scoreLabel2FontSize);
-    DrawText(scoreLabel2Text,
-        // x position
-        screenWidth / 2 - scoreLabel2TextWidth / 2,
-        // y position
-        screenHeight / 2 - (rowCount * rowHeight) / 2 + 4 * rowHeight - 75,
-        scoreLabel2FontSize,
-        DARKGRAY);
-    const char* scoreLabel3Text = "Lower score is better";
-    const int scoreLabel3FontSize = 20;
-    const int scoreLabel3TextWidth = MeasureText(scoreLabel3Text, scoreLabel3FontSize);
-    DrawText(scoreLabel3Text,
-        // x position
-        screenWidth / 2 - scoreLabel3TextWidth / 2,
-        // y position
-        screenHeight / 2 - (rowCount * rowHeight) / 2 + 4 * rowHeight - 50,
-        scoreLabel3FontSize,
-        DARKGRAY);
-    const char* roundsText = TextFormat("Rounds: %d", rounds);
-    const int roundsTextWidth = MeasureText(roundsText, fontSize);
-    DrawText(roundsText,
-        // x position
-        screenWidth / 2 - roundsTextWidth / 2,
-        // y position
-        screenHeight / 2 - (rowCount * rowHeight) / 2 + 5 * rowHeight - 150,
-        fontSize,
-        DARKGRAY);
+    if (Clamp(cameraAnimationCurrentTime / cameraAnimationTime, 0, 1) >= 0.95)
+    {
+        const int screenWidth = GetScreenWidth();
+        const int screenHeight = GetScreenHeight();
+        const char* titleText = "Gas Pump Game";
+        const int fontSize = 40;
+        const int titleTextWidth = MeasureText(titleText, fontSize);
+        const int rowCount = 4;
+        const int margin = 80;
+        const int rowHeight = fontSize + margin;
+        DrawText(titleText,
+            // x position
+            screenWidth / 2 - titleTextWidth / 2,
+            // y position
+            screenHeight / 2 - (rowCount * rowHeight) / 2,
+            fontSize,
+            DARKGRAY);
+        const char* targetText = TextFormat("Target: $%.2f", targetPrice);
+        const int targetTextWidth = MeasureText(targetText, fontSize);
+        DrawText(targetText,
+            // x position
+            screenWidth / 2 - targetTextWidth / 2,
+            // y position
+            screenHeight / 2 - (rowCount * rowHeight) / 2 + rowHeight,
+            fontSize,
+            DARKGRAY);
+        const char* currentText = TextFormat("Current: $%.2f", currentPrice);
+        const int currentTextWidth = MeasureText(currentText, fontSize);
+        DrawText(currentText,
+            // x position
+            screenWidth / 2 - currentTextWidth / 2,
+            // y position
+            screenHeight / 2 - (rowCount * rowHeight) / 2 + 2 * rowHeight,
+            fontSize,
+            DARKGRAY);
+        const char* scoreText = TextFormat("Score: $%.2f", score);
+        const int scoreTextWidth = MeasureText(scoreText, fontSize);
+        DrawText(scoreText,
+            // x position
+            screenWidth / 2 - scoreTextWidth / 2,
+            // y position
+            screenHeight / 2 - (rowCount * rowHeight) / 2 + 3 * rowHeight - 20,
+            fontSize,
+            DARKGRAY);
+        const char* scoreLabelText = "Keep score below $1.00";
+        const int scoreLabelFontSize = 20;
+        const int scoreLabelTextWidth = MeasureText(scoreLabelText, scoreLabelFontSize);
+        DrawText(scoreLabelText,
+            // x position
+            screenWidth / 2 - scoreLabelTextWidth / 2,
+            // y position
+            screenHeight / 2 - (rowCount * rowHeight) / 2 + 4 * rowHeight - 100,
+            scoreLabelFontSize,
+            DARKGRAY);
+        const char* scoreLabel2Text = "Below $0.02 reduces score by $0.25";
+        const int scoreLabel2FontSize = 20;
+        const int scoreLabel2TextWidth = MeasureText(scoreLabel2Text, scoreLabel2FontSize);
+        DrawText(scoreLabel2Text,
+            // x position
+            screenWidth / 2 - scoreLabel2TextWidth / 2,
+            // y position
+            screenHeight / 2 - (rowCount * rowHeight) / 2 + 4 * rowHeight - 75,
+            scoreLabel2FontSize,
+            DARKGRAY);
+        const char* scoreLabel3Text = "Lower score is better";
+        const int scoreLabel3FontSize = 20;
+        const int scoreLabel3TextWidth = MeasureText(scoreLabel3Text, scoreLabel3FontSize);
+        DrawText(scoreLabel3Text,
+            // x position
+            screenWidth / 2 - scoreLabel3TextWidth / 2,
+            // y position
+            screenHeight / 2 - (rowCount * rowHeight) / 2 + 4 * rowHeight - 50,
+            scoreLabel3FontSize,
+            DARKGRAY);
+        const char* roundsText = TextFormat("Rounds: %d", rounds);
+        const int roundsTextWidth = MeasureText(roundsText, fontSize);
+        DrawText(roundsText,
+            // x position
+            screenWidth / 2 - roundsTextWidth / 2,
+            // y position
+            screenHeight / 2 - (rowCount * rowHeight) / 2 + 5 * rowHeight - 150,
+            fontSize,
+            DARKGRAY);
+    }
 
     // Draw pump instructions
     if (!isPumping)
