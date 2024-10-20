@@ -26,6 +26,7 @@
 #include "raylib.h"
 #include "screens.h"
 #include <math.h>
+#include "raymath.h"
 
 #define GO_TO_ENDING 0
 
@@ -33,8 +34,11 @@ static bool gameRunning;
 
 static Camera camera;
 // Camera animation
+static const Vector3 cameraTarget = {0, 4.25, 0};
 static const Vector3 cameraAnimationPosition1 = {50, 50, 50};
-static const Vector3 cameraAnimationPosition2 = {0, 5, 5};
+static const Vector3 cameraAnimationPosition2 = {0, 10, 15};
+static const float cameraAnimationTime = 1;
+static float cameraAnimationCurrentTime = 0;
 
 static Model pumpModel;
 
@@ -47,6 +51,11 @@ static float pumpSpeed = 0.1f;
 // Gameplay Screen Functions Definition
 //----------------------------------------------------------------------------------
 
+static void UpdateGameCamera(float deltaTime)
+{
+    cameraAnimationCurrentTime += deltaTime;
+    camera.position = Vector3Lerp(cameraAnimationPosition1, cameraAnimationPosition2, Clamp(cameraAnimationCurrentTime / cameraAnimationTime, 0, 1));
+}
 
 void InitGameplayScreen(void)
 {
@@ -57,7 +66,7 @@ void InitGameplayScreen(void)
     isPumping = false;
 
     camera.position = cameraAnimationPosition1;
-    camera.target = (Vector3){0, 3, 0};
+    camera.target = cameraTarget;
     camera.up = (Vector3){0, 1, 0};
     camera.fovy = 10;
     camera.projection = CAMERA_PERSPECTIVE;
@@ -67,6 +76,8 @@ void InitGameplayScreen(void)
 
 void UpdateGameplayScreen(void)
 {
+    const float deltaTime = GetFrameTime();
+
     if (IsKeyDown(KEY_SPACE) || IsMouseButtonDown(MOUSE_LEFT_BUTTON))
     {
         if (!isPumping)
@@ -91,6 +102,7 @@ void UpdateGameplayScreen(void)
     }
 
     // UpdateCamera(&camera, CAMERA_THIRD_PERSON);
+    UpdateGameCamera(deltaTime);
 }
 
 void DrawGameplayScreen(void)
