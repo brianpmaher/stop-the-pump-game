@@ -25,12 +25,18 @@
 
 #include "raylib.h"
 #include "screens.h"
+#include <math.h>
 
 //----------------------------------------------------------------------------------
 // Module Variables Definition (local)
 //----------------------------------------------------------------------------------
 static int framesCounter = 0;
 static int finishScreen = 0;
+
+static float currentPrice = 0.0f;
+static float targetPrice = 0.0f;
+static bool isPumping = false;
+static float pumpSpeed = 0.1f;
 
 //----------------------------------------------------------------------------------
 // Gameplay Screen Functions Definition
@@ -42,29 +48,57 @@ void InitGameplayScreen(void)
     // TODO: Initialize GAMEPLAY screen variables here!
     framesCounter = 0;
     finishScreen = 0;
+
+    currentPrice = 0.0f;
+    targetPrice = GetRandomValue(500, 5000) / 100.0f;;
+    isPumping = false;
 }
 
 // Gameplay Screen Update logic
 void UpdateGameplayScreen(void)
 {
-    // TODO: Update GAMEPLAY screen variables here!
-
-    // Press enter or tap to change to ENDING screen
-    if (IsKeyPressed(KEY_ENTER) || IsGestureDetected(GESTURE_TAP))
+    if (IsKeyDown(KEY_SPACE) || IsMouseButtonDown(MOUSE_LEFT_BUTTON))
     {
-        finishScreen = 1;
-        PlaySound(fxCoin);
+        if (!isPumping)
+        {
+            isPumping = true;
+        }
+        currentPrice += pumpSpeed;
+    }
+    else if (isPumping)
+    {
+        isPumping = false;
+        if (fabsf(currentPrice - targetPrice) < 0.5f)
+        {
+            finishScreen = 1;
+        }
+        else
+        {
+            // Reset for another try
+            currentPrice = 0.0f;
+            targetPrice = GetRandomValue(500, 5000) / 100.0f;
+        }
     }
 }
 
 // Gameplay Screen Draw logic
 void DrawGameplayScreen(void)
 {
-    // TODO: Draw GAMEPLAY screen here!
-    DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), PURPLE);
-    Vector2 pos = { 20, 10 };
-    DrawTextEx(font, "GAMEPLAY SCREEN", pos, font.baseSize*3.0f, 4, MAROON);
-    DrawText("PRESS ENTER or TAP to JUMP to ENDING SCREEN", 130, 220, 20, MAROON);
+    ClearBackground(RAYWHITE);
+
+    DrawText("Gas Pump Game", 20, 20, 40, DARKGRAY);
+    DrawText(TextFormat("Target: $%.2f", targetPrice), 20, 70, 30, DARKGREEN);
+    DrawText(TextFormat("Current: $%.2f", currentPrice), 20, 110, 30, MAROON);
+
+    // Draw pump instructions
+    if (!isPumping)
+    {
+        DrawText("Hold SPACE or LEFT MOUSE BUTTON to pump", 20, GetScreenHeight() - 40, 20, DARKGRAY);
+    }
+    else
+    {
+        DrawText("Release to stop pumping", 20, GetScreenHeight() - 40, 20, DARKGRAY);
+    }
 }
 
 // Gameplay Screen Unload logic
