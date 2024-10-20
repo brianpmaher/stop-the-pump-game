@@ -37,7 +37,7 @@ static Camera camera;
 static const Vector3 cameraTarget = {0, 4.25, 0};
 static const Vector3 cameraAnimationPosition1 = {50, 50, 50};
 static const Vector3 cameraAnimationPosition2 = {0, 10, 15};
-static const float cameraAnimationTime = 1;
+static const float cameraAnimationTime = 3;
 static float cameraAnimationCurrentTime = 0;
 
 static Model pumpModel;
@@ -46,6 +46,7 @@ static float currentPrice = 0.0f;
 static float targetPrice = 0.0f;
 static bool isPumping = false;
 static float pumpSpeed = 0.1f;
+static int score = 0;
 
 //----------------------------------------------------------------------------------
 // Gameplay Screen Functions Definition
@@ -107,9 +108,11 @@ void UpdateGameplayScreen(void)
 
 void DrawGameplayScreen(void)
 {
+    ClearBackground(BLACK);
+
     BeginMode3D(camera);
     {
-        DrawGrid(10, 1.0);
+        //DrawGrid(10, 1.0);
 
         DrawModel(pumpModel, (Vector3){-5.25, 0, -7}, 1.0, WHITE);
 
@@ -120,9 +123,48 @@ void DrawGameplayScreen(void)
     }
     EndMode3D();
 
-    DrawText("Gas Pump Game", 20, 20, 40, DARKGRAY);
-    DrawText(TextFormat("Target: $%.2f", targetPrice), 20, 70, 30, DARKGREEN);
-    DrawText(TextFormat("Current: $%.2f", currentPrice), 20, 110, 30, MAROON);
+    const int screenWidth = GetScreenWidth();
+    const int screenHeight = GetScreenHeight();
+    const char* titleText = "Gas Pump Game";
+    const int fontSize = 40;
+    const int titleTextWidth = MeasureText(titleText, fontSize);
+    const int rowCount = 4;
+    const int margin = 80;
+    const int rowHeight = fontSize + margin;
+    DrawText(titleText,
+        // x position
+        screenWidth / 2 - titleTextWidth / 2,
+        // y position
+        screenHeight / 2 - (rowCount * rowHeight) / 2,
+        fontSize,
+        DARKGRAY);
+    const char* targetText = TextFormat("Target: $%.2f", targetPrice);
+    const int targetTextWidth = MeasureText(targetText, fontSize);
+    DrawText(targetText,
+        // x position
+        screenWidth / 2 - targetTextWidth / 2,
+        // y position
+        screenHeight / 2 - (rowCount * rowHeight) / 2 + rowHeight,
+        fontSize,
+        DARKGRAY);
+    const char* currentText = TextFormat("Current: $%.2f", currentPrice);
+    const int currentTextWidth = MeasureText(currentText, fontSize);
+    DrawText(currentText,
+        // x position
+        screenWidth / 2 - currentTextWidth / 2,
+        // y position
+        screenHeight / 2 - (rowCount * rowHeight) / 2 + 2 * rowHeight,
+        fontSize,
+        DARKGRAY);
+    const char* scoreText = TextFormat("Score: %i", score);
+    const int scoreTextWidth = MeasureText(scoreText, fontSize);
+    DrawText(scoreText,
+        // x position
+        screenWidth / 2 - scoreTextWidth / 2,
+        // y position
+        screenHeight / 2 - (rowCount * rowHeight) / 2 + 3 * rowHeight,
+        fontSize,
+        DARKGRAY);
 
     // Draw pump instructions
     if (!isPumping)
