@@ -96,6 +96,7 @@ void DrawGameplayScreen(void)
         DrawGrid(10, 1.0);
         DrawModel(pumpModel, (Vector3){0, 0, 0}, 1.0, WHITE);
     }
+    EndMode3D();
 
     DrawText("Gas Pump Game", 20, 20, 40, DARKGRAY);
     DrawText(TextFormat("Target: $%.2f", targetPrice), 20, 70, 30, DARKGREEN);
@@ -110,7 +111,6 @@ void DrawGameplayScreen(void)
     {
         DrawText("Release to stop pumping", 20, GetScreenHeight() - 40, 20, DARKGRAY);
     }
-    EndMode3D();
 }
 
 void UnloadGameplayScreen(void)
