@@ -31,8 +31,8 @@ Sound fxCoin = { 0 };
 //----------------------------------------------------------------------------------
 // Local Variables Definition (local to this module)
 //----------------------------------------------------------------------------------
-static const int screenWidth = 800;
-static const int screenHeight = 450;
+static const int screenWidth = 1280;
+static const int screenHeight = 720;
 
 // Required variables to manage screen transitions (fade-in, fade-out)
 static float transAlpha = 0.0f;
@@ -59,13 +59,14 @@ int main(void)
 {
     // Initialization
     //---------------------------------------------------------
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT | FLAG_MSAA_4X_HINT);  // Set window configuration state using flags
     InitWindow(screenWidth, screenHeight, "raylib game template");
 
     InitAudioDevice();      // Initialize audio device
 
     // Load global data (assets that must be available in all screens, i.e. font)
     font = LoadFont("resources/mecha.png");
-    //music = LoadMusicStream("resources/ambient.ogg"); // TODO: Load music
+    music = LoadMusicStream("resources/ambient.ogg"); // TODO: Load music
     fxCoin = LoadSound("resources/coin.wav");
 
     SetMusicVolume(music, 1.0f);
@@ -73,7 +74,7 @@ int main(void)
 
     // Setup and init first screen
     currentScreen = GAMEPLAY;
-    InitLogoScreen();
+    InitGameplayScreen();
 
 #if defined(PLATFORM_WEB)
     emscripten_set_main_loop(UpdateDrawFrame, 60, 1);
