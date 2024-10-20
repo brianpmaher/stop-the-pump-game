@@ -28,6 +28,11 @@
 #include <math.h>
 #include "raymath.h"
 
+// TODO: Fade in text near animation end
+// TODO: Game end state
+// TODO: Music
+// TODO: Title screen and game over screen
+
 #define GO_TO_ENDING 0
 
 static bool gameRunning;
@@ -37,7 +42,7 @@ static Camera camera;
 static const Vector3 cameraTarget = {0, 4.25, 0};
 static const Vector3 cameraAnimationPosition1 = {50, 50, 50};
 static const Vector3 cameraAnimationPosition2 = {0, 10, 15};
-static const float cameraAnimationTime = 3;
+static const float cameraAnimationTime = 2;
 static float cameraAnimationCurrentTime = 0;
 
 static Model pumpModel;
@@ -45,8 +50,11 @@ static Model pumpModel;
 static float currentPrice = 0.0f;
 static float targetPrice = 0.0f;
 static bool isPumping = false;
-static float pumpSpeed = 0.1f;
-static int score = 0;
+static float pumpSpeed = 0.015f;
+static float score = 0;
+static int rounds = 0;
+static int priceRangeMinCents = 25;
+static int priceRangeMaxCents = 200;
 
 //----------------------------------------------------------------------------------
 // Gameplay Screen Functions Definition
@@ -63,7 +71,7 @@ void InitGameplayScreen(void)
     gameRunning = true;
 
     currentPrice = 0.0f;
-    targetPrice = GetRandomValue(500, 5000) / 100.0f;
+    targetPrice = GetRandomValue(priceRangeMinCents, priceRangeMaxCents) / 100.0f;
     isPumping = false;
 
     camera.position = cameraAnimationPosition1;
@@ -73,6 +81,12 @@ void InitGameplayScreen(void)
     camera.projection = CAMERA_PERSPECTIVE;
 
     pumpModel = LoadModel("resources/pump.vox");
+
+    currentPrice = 0.0f;
+    isPumping = false;
+    pumpSpeed = 0.15f * Clamp(rounds * 2 / 10.0f, 1.0f, 5.0f);
+    score = 0;
+    rounds = 0;
 }
 
 void UpdateGameplayScreen(void)
@@ -85,12 +99,31 @@ void UpdateGameplayScreen(void)
         {
             isPumping = true;
         }
-        currentPrice += pumpSpeed;
+        currentPrice = currentPrice + (pumpSpeed * deltaTime);
     }
     else if (isPumping)
     {
         isPumping = false;
-        if (fabsf(currentPrice - targetPrice) < 0.5f)
+        // Game over
+        const float roundDelta = fabsf(currentPrice - targetPrice);
+        if (roundDelta < 0.02f)
+        {
+            score -= 0.25f;
+            if (score < 0.0f)
+            {
+                score = 0.0f;
+            }
+            PlaySound(fxCoin);
+        }
+        else 
+        {
+            PlaySound(fxError);
+        }
+        rounds += 1;
+
+        score += roundDelta;
+        const bool isEndGame = score > 1.0f;
+        if (isEndGame)
         {
             gameRunning = false;
         }
@@ -98,7 +131,7 @@ void UpdateGameplayScreen(void)
         {
             // Reset for another try
             currentPrice = 0.0f;
-            targetPrice = GetRandomValue(500, 5000) / 100.0f;
+            targetPrice = GetRandomValue(priceRangeMinCents, priceRangeMaxCents) / 100.0f;
         }
     }
 
@@ -156,24 +189,63 @@ void DrawGameplayScreen(void)
         screenHeight / 2 - (rowCount * rowHeight) / 2 + 2 * rowHeight,
         fontSize,
         DARKGRAY);
-    const char* scoreText = TextFormat("Score: %i", score);
+    const char* scoreText = TextFormat("Score: $%.2f", score);
     const int scoreTextWidth = MeasureText(scoreText, fontSize);
     DrawText(scoreText,
         // x position
         screenWidth / 2 - scoreTextWidth / 2,
         // y position
-        screenHeight / 2 - (rowCount * rowHeight) / 2 + 3 * rowHeight,
+        screenHeight / 2 - (rowCount * rowHeight) / 2 + 3 * rowHeight - 20,
+        fontSize,
+        DARKGRAY);
+    const char* scoreLabelText = "Keep score below $1.00";
+    const int scoreLabelFontSize = 20;
+    const int scoreLabelTextWidth = MeasureText(scoreLabelText, scoreLabelFontSize);
+    DrawText(scoreLabelText,
+        // x position
+        screenWidth / 2 - scoreLabelTextWidth / 2,
+        // y position
+        screenHeight / 2 - (rowCount * rowHeight) / 2 + 4 * rowHeight - 100,
+        scoreLabelFontSize,
+        DARKGRAY);
+    const char* scoreLabel2Text = "Below $0.02 reduces score by $0.25";
+    const int scoreLabel2FontSize = 20;
+    const int scoreLabel2TextWidth = MeasureText(scoreLabel2Text, scoreLabel2FontSize);
+    DrawText(scoreLabel2Text,
+        // x position
+        screenWidth / 2 - scoreLabel2TextWidth / 2,
+        // y position
+        screenHeight / 2 - (rowCount * rowHeight) / 2 + 4 * rowHeight - 75,
+        scoreLabel2FontSize,
+        DARKGRAY);
+    const char* scoreLabel3Text = "Lower score is better";
+    const int scoreLabel3FontSize = 20;
+    const int scoreLabel3TextWidth = MeasureText(scoreLabel3Text, scoreLabel3FontSize);
+    DrawText(scoreLabel3Text,
+        // x position
+        screenWidth / 2 - scoreLabel3TextWidth / 2,
+        // y position
+        screenHeight / 2 - (rowCount * rowHeight) / 2 + 4 * rowHeight - 50,
+        scoreLabel3FontSize,
+        DARKGRAY);
+    const char* roundsText = TextFormat("Rounds: %d", rounds);
+    const int roundsTextWidth = MeasureText(roundsText, fontSize);
+    DrawText(roundsText,
+        // x position
+        screenWidth / 2 - roundsTextWidth / 2,
+        // y position
+        screenHeight / 2 - (rowCount * rowHeight) / 2 + 5 * rowHeight - 150,
         fontSize,
         DARKGRAY);
 
     // Draw pump instructions
     if (!isPumping)
     {
-        DrawText("Hold SPACE or LEFT MOUSE BUTTON to pump", 20, GetScreenHeight() - 40, 20, DARKGRAY);
+        DrawText("Hold SPACE or LEFT MOUSE BUTTON to pump", 20, GetScreenHeight() - 40, 20, WHITE);
     }
     else
     {
-        DrawText("Release to stop pumping", 20, GetScreenHeight() - 40, 20, DARKGRAY);
+        DrawText("Release to stop pumping", 20, GetScreenHeight() - 40, 20, WHITE);
     }
 }
 
