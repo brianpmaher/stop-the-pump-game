@@ -72,7 +72,7 @@ int main(void)
     PlayMusicStream(music);
 
     // Setup and init first screen
-    currentScreen = LOGO;
+    currentScreen = GAMEPLAY;
     InitLogoScreen();
 
 #if defined(PLATFORM_WEB)
