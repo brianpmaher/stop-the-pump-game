@@ -32,6 +32,9 @@
 static bool gameRunning;
 
 static Camera camera;
+// Camera animation
+static const Vector3 cameraAnimationPosition1 = {50, 50, 50};
+static const Vector3 cameraAnimationPosition2 = {0, 5, 5};
 
 static Model pumpModel;
 
@@ -53,11 +56,11 @@ void InitGameplayScreen(void)
     targetPrice = GetRandomValue(500, 5000) / 100.0f;
     isPumping = false;
 
-    camera.position = (Vector3){10, 10, 10};
-    camera.target = (Vector3){0, 0, 0};
+    camera.position = cameraAnimationPosition1;
+    camera.target = (Vector3){0, 3, 0};
     camera.up = (Vector3){0, 1, 0};
     camera.fovy = 10;
-    camera.projection = CAMERA_ORTHOGRAPHIC;
+    camera.projection = CAMERA_PERSPECTIVE;
 
     pumpModel = LoadModel("resources/pump.vox");
 }
@@ -86,7 +89,8 @@ void UpdateGameplayScreen(void)
             targetPrice = GetRandomValue(500, 5000) / 100.0f;
         }
     }
-    UpdateCamera(&camera, CAMERA_ORBITAL);
+
+    // UpdateCamera(&camera, CAMERA_THIRD_PERSON);
 }
 
 void DrawGameplayScreen(void)
@@ -94,7 +98,13 @@ void DrawGameplayScreen(void)
     BeginMode3D(camera);
     {
         DrawGrid(10, 1.0);
-        DrawModel(pumpModel, (Vector3){0, 0, 0}, 1.0, WHITE);
+
+        DrawModel(pumpModel, (Vector3){-5.25, 0, -7}, 1.0, WHITE);
+
+        const float cameraAnimationTargetScale = 1.0;
+        const Color cameraAnimationTargetColor = MAROON;
+        // DrawSphere(cameraAnimationPosition1, cameraAnimationTargetScale, cameraAnimationTargetColor);
+        DrawSphere(cameraAnimationPosition2, cameraAnimationTargetScale, cameraAnimationTargetColor);
     }
     EndMode3D();
 

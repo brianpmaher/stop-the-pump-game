@@ -57,6 +57,8 @@ static void UpdateDrawFrame(void);          // Update and draw one frame
 //----------------------------------------------------------------------------------
 int main(void)
 {
+    TraceLog(LOG_DEBUG, "Application directory: %s", GetApplicationDirectory());
+
     // Initialization
     //---------------------------------------------------------
     SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT | FLAG_MSAA_4X_HINT);  // Set window configuration state using flags
