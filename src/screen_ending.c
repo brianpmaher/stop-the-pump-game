@@ -39,7 +39,6 @@ static int finishScreen = 0;
 // Ending Screen Initialization logic
 void InitEndingScreen(void)
 {
-    // TODO: Initialize ENDING screen variables here!
     framesCounter = 0;
     finishScreen = 0;
 }
@@ -47,8 +46,6 @@ void InitEndingScreen(void)
 // Ending Screen Update logic
 void UpdateEndingScreen(void)
 {
-    // TODO: Update ENDING screen variables here!
-
     // Press enter or tap to return to TITLE screen
     if (IsKeyPressed(KEY_ENTER) || IsGestureDetected(GESTURE_TAP))
     {
@@ -60,18 +57,47 @@ void UpdateEndingScreen(void)
 // Ending Screen Draw logic
 void DrawEndingScreen(void)
 {
-    // TODO: Draw ENDING screen here!
     DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), BLUE);
 
-    Vector2 pos = { 20, 10 };
-    DrawTextEx(font, "ENDING SCREEN", pos, font.baseSize*3.0f, 4, DARKBLUE);
-    DrawText("PRESS ENTER or TAP to RETURN to TITLE SCREEN", 120, 220, 20, DARKBLUE);
+    const int screenWidth = GetScreenWidth();
+    const int screenHeight = GetScreenHeight();
+    const char* gameOverText = "GAME OVER";
+    const int fontSize = 40;
+    const int gameOverTextWidth = MeasureText(gameOverText, fontSize);
+    const int rowCount = 3;
+    const int margin = 80;
+    const int rowHeight = fontSize + margin;
+    const Color color = WHITE;
+    DrawText(gameOverText,
+        // x position
+        screenWidth / 2 - gameOverTextWidth / 2,
+        // y position
+        screenHeight / 2 - (rowCount * rowHeight) / 2,
+        fontSize,
+        color);
+    const char* roundsText = TextFormat("Rounds Survived: %d", rounds);
+    const int roundsTextWidth = MeasureText(roundsText, fontSize);
+    DrawText(roundsText,
+        // x position
+        screenWidth / 2 - roundsTextWidth / 2,
+        // y position
+        screenHeight / 2 - (rowCount * rowHeight) / 2 + rowHeight,
+        fontSize,
+        color);
+    const char* infoText = "Press ENTER to return to play again";
+    const int infoTextWidth = MeasureText(infoText, fontSize);
+    DrawText(infoText,
+        // x position
+        screenWidth / 2 - infoTextWidth / 2,
+        // y position
+        screenHeight / 2 - (rowCount * rowHeight) / 2 + 2 * rowHeight,
+        fontSize,
+        color);
 }
 
 // Ending Screen Unload logic
 void UnloadEndingScreen(void)
 {
-    // TODO: Unload ENDING screen variables here!
 }
 
 // Ending Screen should finish?

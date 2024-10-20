@@ -52,7 +52,7 @@ static float targetPrice = 0.0f;
 static bool isPumping = false;
 static float pumpSpeed = 0.015f;
 static float score = 0;
-static int rounds = 0;
+int rounds = 0;
 static int priceRangeMinCents = 25;
 static int priceRangeMaxCents = 200;
 

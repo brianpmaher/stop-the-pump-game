@@ -63,7 +63,7 @@ int main(void)
     // Initialization
     //---------------------------------------------------------
     SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT | FLAG_MSAA_4X_HINT);  // Set window configuration state using flags
-    InitWindow(screenWidth, screenHeight, "raylib game template");
+    InitWindow(screenWidth, screenHeight, "Stop the Pump!");
 
     InitAudioDevice();      // Initialize audio device
 
@@ -77,8 +77,8 @@ int main(void)
     PlayMusicStream(music);
 
     // Setup and init first screen
-    currentScreen = GAMEPLAY;
-    InitGameplayScreen();
+    currentScreen = LOGO;
+    InitLogoScreen();
 
 #if defined(PLATFORM_WEB)
     emscripten_set_main_loop(UpdateDrawFrame, 60, 1);
@@ -99,8 +99,6 @@ int main(void)
     switch (currentScreen)
     {
         case LOGO: UnloadLogoScreen(); break;
-        case TITLE: UnloadTitleScreen(); break;
-        case OPTIONS: UnloadOptionsScreen(); break;
         case GAMEPLAY: UnloadGameplayScreen(); break;
         case ENDING: UnloadEndingScreen(); break;
         default: break;
@@ -129,8 +127,6 @@ static void ChangeToScreen(int screen)
     switch (currentScreen)
     {
         case LOGO: UnloadLogoScreen(); break;
-        case TITLE: UnloadTitleScreen(); break;
-        case OPTIONS: UnloadOptionsScreen(); break;
         case GAMEPLAY: UnloadGameplayScreen(); break;
         case ENDING: UnloadEndingScreen(); break;
         default: break;
@@ -140,8 +136,6 @@ static void ChangeToScreen(int screen)
     switch (screen)
     {
         case LOGO: InitLogoScreen(); break;
-        case TITLE: InitTitleScreen(); break;
-        case OPTIONS: InitOptionsScreen(); break;
         case GAMEPLAY: InitGameplayScreen(); break;
         case ENDING: InitEndingScreen(); break;
         default: break;
@@ -177,8 +171,6 @@ static void UpdateTransition(void)
             switch (transFromScreen)
             {
                 case LOGO: UnloadLogoScreen(); break;
-                case TITLE: UnloadTitleScreen(); break;
-                case OPTIONS: UnloadOptionsScreen(); break;
                 case GAMEPLAY: UnloadGameplayScreen(); break;
                 case ENDING: UnloadEndingScreen(); break;
                 default: break;
@@ -188,8 +180,6 @@ static void UpdateTransition(void)
             switch (transToScreen)
             {
                 case LOGO: InitLogoScreen(); break;
-                case TITLE: InitTitleScreen(); break;
-                case OPTIONS: InitOptionsScreen(); break;
                 case GAMEPLAY: InitGameplayScreen(); break;
                 case ENDING: InitEndingScreen(); break;
                 default: break;
@@ -237,22 +227,7 @@ static void UpdateDrawFrame(void)
             {
                 UpdateLogoScreen();
 
-                if (FinishLogoScreen()) TransitionToScreen(TITLE);
-
-            } break;
-            case TITLE:
-            {
-                UpdateTitleScreen();
-
-                if (FinishTitleScreen() == 1) TransitionToScreen(OPTIONS);
-                else if (FinishTitleScreen() == 2) TransitionToScreen(GAMEPLAY);
-
-            } break;
-            case OPTIONS:
-            {
-                UpdateOptionsScreen();
-
-                if (FinishOptionsScreen()) TransitionToScreen(TITLE);
+                if (FinishLogoScreen()) TransitionToScreen(GAMEPLAY);
 
             } break;
             case GAMEPLAY:
@@ -267,7 +242,7 @@ static void UpdateDrawFrame(void)
             {
                 UpdateEndingScreen();
 
-                if (FinishEndingScreen() == 1) TransitionToScreen(TITLE);
+                if (FinishEndingScreen() == 1) TransitionToScreen(GAMEPLAY);
 
             } break;
             default: break;
@@ -285,8 +260,6 @@ static void UpdateDrawFrame(void)
         switch(currentScreen)
         {
             case LOGO: DrawLogoScreen(); break;
-            case TITLE: DrawTitleScreen(); break;
-            case OPTIONS: DrawOptionsScreen(); break;
             case GAMEPLAY: DrawGameplayScreen(); break;
             case ENDING: DrawEndingScreen(); break;
             default: break;
