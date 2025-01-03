@@ -36,8 +36,8 @@ Gameplay
 ## Developers
 
 - Brian Maher - Graphics, UI, and polish
+  - [Website](https://brianpmaher.com)
   - [Github](https://github.com/brianpmaher)
-  - [X](https://x.com/_brianpmaher)
 
 - Kyle Reynolds - Gameplay
   - [Github](https://github.com/KDreynolds)
